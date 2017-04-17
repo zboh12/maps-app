@@ -1,4 +1,4 @@
-angular.module('amneApp', [])
+angular.module('mapsApp', [])
 	.controller('MainCtrl', [
 		'$scope',
 		function($scope){
@@ -10,7 +10,17 @@ angular.module('amneApp', [])
 			var latLng2;
 			var bounds;
 			var markers = [];
-			var austin = {lat: 30.2672, lng: -97.7431}; // default 
+			var nyc = {lat: 40.7128, lng: -74.0059}; // default 
+
+			$scope.placesOfInterest = [
+				{value: 'hospital', name: 'Hospital'},
+				{value: 'laundry', name: 'Laundry'},
+				{value: 'library', name: 'Library'},
+				{value: 'bakery', name: 'Bakery'},
+				{value: 'convenience_store', name: 'Convenience Store'},
+				{value: 'post_office', name: 'Post Office'},
+				{value: 'gas_station', name: 'Gas Station'}
+			];
 
 			$scope.showList = false;
 			$scope.placeObjects = {};  // dictionary, key=name, value=obj location data
@@ -18,11 +28,12 @@ angular.module('amneApp', [])
 			$scope.addr1 = "";
 			$scope.addr2 = "";
 			$scope.callbackCount = 0;
+			$scope.placeType = "";
 
 			$scope.initMap = function() {
 		        map = new google.maps.Map(document.getElementById('map'), {
 		          zoom: 11,
-		          center: austin
+		          center: nyc
 		        });
 
 		        geocoder = new google.maps.Geocoder();
@@ -78,7 +89,7 @@ angular.module('amneApp', [])
 			        service.nearbySearch({
 			          location: latLng1,
 			          radius: 16093,  // 10 miles in meters
-			          type: ['real_estate_agency']
+			          type: [$scope.placeType]
 			        }, callback);
 				  } else {
 				    alert("Geocode was not successful: " + status);
@@ -99,7 +110,7 @@ angular.module('amneApp', [])
 			        service.nearbySearch({
 			          location: latLng2,
 			          radius: 16093,  // 10 miles in meters
-			          type: ['real_estate_agency']
+			          type: [$scope.placeType]
 			        }, callback);
 				  } else {
 				    alert("Geocode was not successful: " + status);
@@ -108,23 +119,25 @@ angular.module('amneApp', [])
 			}
 
 			function callback(results, status) {
-		        if (status === google.maps.places.PlacesServiceStatus.OK) {
-		          $scope.callbackCount += 1;
+		        if (status === google.maps.places.PlacesServiceStatus.OK && $scope.callbackCount === 1) {
 		          for (var i = 0; i < results.length; i++) {
 		          	var placeName = results[i].name;
-		          	var	distFromLoc1 = getDistance(results[i].geometry.location, latLng1);
-	          		var distFromLoc2 = getDistance(results[i].geometry.location, latLng2);
-	          		
-		          	if (!(placeName in $scope.placeObjects)) {
-		          		$scope.placeObjects[placeName] = {
-		          			dist1: distFromLoc1,
-		          			dist2: distFromLoc2,
-		          			dist: distFromLoc1 + distFromLoc2
-		          		}
+		          	if (results[i].geometry.location) {
+		          		var	distFromLoc1 = getDistance(results[i].geometry.location, latLng1);
+		          		var distFromLoc2 = getDistance(results[i].geometry.location, latLng2);
+		          		
+			          	if (!(placeName in $scope.placeObjects)) {
+			          		$scope.placeObjects[placeName] = {
+			          			dist1: distFromLoc1,
+			          			dist2: distFromLoc2,
+			          			dist: distFromLoc1 + distFromLoc2
+			          		}
+			          		createMarker(results[i]);
+			          	}
 		          	}
-		          	createMarker(results[i]);
 		          }
 		        }
+		        $scope.callbackCount += 1;
 		        if ($scope.callbackCount === 2) {
 		          // list out places in descending order by total distance
 		          sortByDistance();

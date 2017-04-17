@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Amne App</title>
+    <title>Maps App</title>
     <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBT0yyn12PapzVY63Ni7c88AeJuJGhm594&libraries=places"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -16,11 +16,11 @@
     </style>
   </head>
 
-  <body ng-app="amneApp" ng-controller="MainCtrl">
+  <body ng-app="mapsApp" ng-controller="MainCtrl">
     <div class="page-header">
       <div class="container">
-        <h1>Local Real Estate Agencies</h1> 
-        <p>Find real estate agencies within 10 miles of either of 2 chosen addresses.</p> 
+        <h1>Maps App</h1> 
+        <p>Find places of interests within 10 miles of either of 2 chosen addresses.</p> 
       </div>
     </div>
     <div class="container">
@@ -43,6 +43,16 @@
             ng-model="addr2"
             placeholder="Enter address"
             >
+        </div>
+        <br>
+        <div class="input-group col-sm-6">
+          <label>Place of Interest:</label>
+          <select
+            class="form-control"
+            ng-model="placeType"
+            required>
+            <option ng-repeat="place in placesOfInterest" ng-value="place.value">{{place.name}}</option>
+          </select>
         </div>
         <br>
         <span class="input-group-btn">
