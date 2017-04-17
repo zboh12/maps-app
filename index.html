@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Amne App</title>
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBT0yyn12PapzVY63Ni7c88AeJuJGhm594&libraries=places"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="app.js"></script>
+    <style>
+      #map {
+        height: 400px;
+        width: 100%;
+       }
+    </style>
+  </head>
+
+  <body ng-app="amneApp" ng-controller="MainCtrl">
+    <div class="page-header">
+      <div class="container">
+        <h1>Local Real Estate Agencies</h1> 
+        <p>Find real estate agencies within 10 miles of either of 2 chosen addresses.</p> 
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="input-group col-sm-6">
+          <label for="autocomplete1">Address 1:</label>
+          <input type="text" 
+            class="form-control" 
+            id="autocomplete1" 
+            ng-model="addr1"
+            placeholder="Enter address"
+            >
+        </div>
+        <br>
+        <div class="input-group col-sm-6">
+          <label for="autocomplete2">Address 2:</label>
+          <input type="text" 
+            class="form-control" 
+            id="autocomplete2" 
+            ng-model="addr2"
+            placeholder="Enter address"
+            >
+        </div>
+        <br>
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" ng-click="search()">Search</button>
+        </span>
+        <br>
+      </div>
+      <div id="map"></div>
+    </div>
+    <br>
+
+    <div class="container">
+      <div ng-if="showList">
+        <div ng-repeat="place in sortedPlaces">
+          <b>{{place.name}}</b>
+          {{ place.dist | number:2 }} miles total ({{place.dist1 | number:2}} miles from address 1, {{place.dist2 | number:2}} miles from address 2)
+        </div>
+      </div>
+    </div>
+    <br><br><br>
+  </body>
+
+</html>
+
